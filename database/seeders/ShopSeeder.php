@@ -1,0 +1,1167 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Enums\ShopStatus;
+use App\Models\Shop;
+use Illuminate\Database\Seeder;
+
+class ShopSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $shops = [
+            [
+                'id' => '1',
+                'country_id' => '3',
+                'name' => 'Интернет-магазин RU',
+                'contact_phone' => '',
+                'address' => '',
+                'latitude' => '',
+                'longitude' => '',
+                'mobile_backend_id' => '2050',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '2',
+                'country_id' => '2',
+                'name' => 'Интернет-магазин KZ',
+                'contact_phone' => '',
+                'address' => '',
+                'latitude' => '',
+                'longitude' => '',
+                'mobile_backend_id' => '1050',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '3',
+                'country_id' => '1',
+                'name' => 'Интернет-магазин KG',
+                'contact_phone' => '',
+                'address' => '',
+                'latitude' => '',
+                'longitude' => '',
+                'mobile_backend_id' => '50',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '4',
+                'country_id' => '2',
+                'name' => 'ФМ "СЕЙФУЛЛИНА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, проспект Сакена Сейфуллина, 90',
+                'latitude' => '43.31561196144539',
+                'longitude' => '76.93969536373494',
+                'mobile_backend_id' => '1004',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '5',
+                'country_id' => '2',
+                'name' => 'ФМ "СЕВЕРНОЕ КОЛЬЦО"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Северное Кольцо, 37/4',
+                'latitude' => '43.32696612755415',
+                'longitude' => '76.90962762022376',
+                'mobile_backend_id' => '1017',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '6',
+                'country_id' => '2',
+                'name' => 'ФМ "КОК ЖИЕК"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Геологов, 1А',
+                'latitude' => '43.35165993226118',
+                'longitude' => '76.9261702709645',
+                'mobile_backend_id' => '1033',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '7',
+                'country_id' => '2',
+                'name' => 'ФМ "ЖИБЕК ЖОЛЫ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, проспект Жибек Жолы, 54',
+                'latitude' => '43.262409415028266',
+                'longitude' => '76.95389618993049',
+                'mobile_backend_id' => '1024',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '8',
+                'country_id' => '2',
+                'name' => 'ФМ "САТПАЕВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Сатпаева, 54',
+                'latitude' => '43.23500573942781',
+                'longitude' => '76.8992163867235',
+                'mobile_backend_id' => '1031',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '9',
+                'country_id' => '2',
+                'name' => 'ФМ "КАМЕНКА"',
+                'contact_phone' => '',
+                'address' => 'Алматы, Казахстан',
+                'latitude' => '43.188315273648165',
+                'longitude' => '76.83035791710928',
+                'mobile_backend_id' => '1002',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '10',
+                'country_id' => '2',
+                'name' => 'ФМ "БАЙТУРСЫНОВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Байтурсынова, 159',
+                'latitude' => '43.23259660234137',
+                'longitude' => '76.93245629009029',
+                'mobile_backend_id' => '1018',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '11',
+                'country_id' => '2',
+                'name' => 'ФМ "МЕНДЕКУЛОВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Самал-2, 80',
+                'latitude' => '43.23223800386347',
+                'longitude' => '76.95304706747648',
+                'mobile_backend_id' => '1027',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '12',
+                'country_id' => '2',
+                'name' => 'ФМ "САРЫ-АРКА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, 5-й микрорайон, 1',
+                'latitude' => '43.2291970509241',
+                'longitude' => '76.85964339697637',
+                'mobile_backend_id' => '1030',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '13',
+                'country_id' => '2',
+                'name' => 'ФМ "АЙНАБУЛАК"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Айнабулак-1, 9',
+                'latitude' => '43.323563325101176',
+                'longitude' => '76.91027212104795',
+                'mobile_backend_id' => '1001',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '14',
+                'country_id' => '2',
+                'name' => 'ФМ "ТИМИРЯЗЕВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Розыбакиева, 125/8',
+                'latitude' => '43.22434105780834',
+                'longitude' => '76.89144931874212',
+                'mobile_backend_id' => '1003',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '15',
+                'country_id' => '2',
+                'name' => 'ФМ "КАЗАХФИЛЬМ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Казахфильм, 13',
+                'latitude' => '43.193827294606784',
+                'longitude' => '76.90429075750387',
+                'mobile_backend_id' => '1006',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '16',
+                'country_id' => '2',
+                'name' => 'ФМ "ШАЛЯПИНА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Шаляпина',
+                'latitude' => '43.21919553372835',
+                'longitude' => '76.86689381552435',
+                'mobile_backend_id' => '1005',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '17',
+                'country_id' => '2',
+                'name' => 'ФМ "АКСАЙ-2"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Аксай-2, 29',
+                'latitude' => '43.23649030677388',
+                'longitude' => '76.83131035537487',
+                'mobile_backend_id' => '1022',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '18',
+                'country_id' => '2',
+                'name' => 'ФМ "ГОГОЛЯ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Гоголя, 144',
+                'latitude' => '43.25781995063503',
+                'longitude' => '76.91669021250502',
+                'mobile_backend_id' => '1007',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '19',
+                'country_id' => '2',
+                'name' => 'ФМ "ФУРМАНОВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Гоголя, 75',
+                'latitude' => '43.260344290661905',
+                'longitude' => '76.94813441142658',
+                'mobile_backend_id' => '1020',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '20',
+                'country_id' => '2',
+                'name' => 'ФМ "АБАЯ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, проспект Абая, 115',
+                'latitude' => '43.23985579887871',
+                'longitude' => '76.9021532767538',
+                'mobile_backend_id' => '1019',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '21',
+                'country_id' => '2',
+                'name' => 'ФМ "ТУРКЕБАЕВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Толе Би, 260',
+                'latitude' => '43.25004962532115',
+                'longitude' => '76.88054261370472',
+                'mobile_backend_id' => '1008',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '22',
+                'country_id' => '2',
+                'name' => 'ФМ "СПУТНИК"',
+                'contact_phone' => '',
+                'address' => 'Микрорайон Мамыр-1 8а, Алматы, Казахстан',
+                'latitude' => '43.2114662',
+                'longitude' => '76.8428928',
+                'mobile_backend_id' => '1032',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '23',
+                'country_id' => '2',
+                'name' => 'ФМ "ДУМАН"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Талгарский район, село Бесагаш, улица Райымбек Батыра, 162',
+                'latitude' => '43.29156467663572',
+                'longitude' => '77.01460290246074',
+                'mobile_backend_id' => '1009',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '24',
+                'country_id' => '2',
+                'name' => 'ФМ "АЛМАГУЛЬ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Алмагуль, 8',
+                'latitude' => '43.20754662444223',
+                'longitude' => '76.90323483766525',
+                'mobile_backend_id' => '1010',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '25',
+                'country_id' => '2',
+                'name' => 'ФМ "МУСТАФИНА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Мельникайте, 32/2',
+                'latitude' => '43.20285849369036',
+                'longitude' => '76.87927667009609',
+                'mobile_backend_id' => '1028',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '26',
+                'country_id' => '2',
+                'name' => 'ФМ "МАРТ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Рихарда Зорге, 18',
+                'latitude' => '43.337088037572386',
+                'longitude' => '76.9558580013448',
+                'mobile_backend_id' => '1011',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '27',
+                'country_id' => '2',
+                'name' => 'ФМП "ВАЗ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, Наманганская улица, 35А ',
+                'latitude' => '43.34813',
+                'longitude' => '76.986006',
+                'mobile_backend_id' => '1111',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '28',
+                'country_id' => '2',
+                'name' => 'ФМ "КАСКЕЛЕН"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Карасайский район, Каскелен, проспект Абылай Хана, 90',
+                'latitude' => '43.20335860537386',
+                'longitude' => '76.6200866318945',
+                'mobile_backend_id' => '1012',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '29',
+                'country_id' => '2',
+                'name' => 'ФМП "ГРЭС',
+                'contact_phone' => '',
+                'address' => 'ул. Тәуелсіздіктің 10 жылдығы, 1 ',
+                'latitude' => '',
+                'longitude' => '',
+                'mobile_backend_id' => '1112',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '30',
+                'country_id' => '2',
+                'name' => 'ФМ "МЕРЕЙ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, проспект Суюнбая, 2/17',
+                'latitude' => '43.274924765704554',
+                'longitude' => '76.94767264776353',
+                'mobile_backend_id' => '1014',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '31',
+                'country_id' => '2',
+                'name' => 'ФМ "РЫСКУЛОВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, проспект Рыскулова, 176',
+                'latitude' => '43.26304146478598',
+                'longitude' => '76.86090896419897',
+                'mobile_backend_id' => '1015',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '32',
+                'country_id' => '2',
+                'name' => 'ФМ "МАКАТАЕВА"',
+                'contact_phone' => '',
+                'address' => 'ул. Макатаева 154, Алматы, Казахстан',
+                'latitude' => '43.2625991',
+                'longitude' => '76.9282506',
+                'mobile_backend_id' => '1034',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '33',
+                'country_id' => '2',
+                'name' => 'ФМ "ЖАНДОСОВА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Мустай Карима, 11В/28',
+                'latitude' => '43.20755833901843',
+                'longitude' => '76.85862797848655',
+                'mobile_backend_id' => '1016',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '34',
+                'country_id' => '2',
+                'name' => 'ФМ "ТОЛЕ БИ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Ауэзова, 9',
+                'latitude' => '43.25131505437812',
+                'longitude' => '76.90216317319859',
+                'mobile_backend_id' => '1035',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '35',
+                'country_id' => '2',
+                'name' => 'ФМ "САИНА"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Аксай-2, 52Б',
+                'latitude' => '43.23911129516936',
+                'longitude' => '76.8392256189007',
+                'mobile_backend_id' => '1037',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '36',
+                'country_id' => '2',
+                'name' => 'ФМ "ЖЕТЫСУ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Жетысу-3, 25',
+                'latitude' => '43.218445650852246',
+                'longitude' => '76.84401584550658',
+                'mobile_backend_id' => '1013',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '37',
+                'country_id' => '2',
+                'name' => 'ФМ "БОРАЛДАЙ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Илийский район, посёлок Боралдай, улица Абылай Хана, 5А',
+                'latitude' => '43.36691',
+                'longitude' => '76.865991',
+                'mobile_backend_id' => '1039',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '38',
+                'country_id' => '2',
+                'name' => 'ФМП "БАЙТЕРЕК"',
+                'contact_phone' => '',
+                'address' => 'р-о. Енбекшиказахский. с. Байтерек, ул. Алмерек Абыз, 47 ',
+                'latitude' => '',
+                'longitude' => '',
+                'mobile_backend_id' => '1113',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '39',
+                'country_id' => '2',
+                'name' => 'ФМ "ТАЛДЫКОРГАН"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Талдыкорган, микрорайон Жастар, 39Б',
+                'latitude' => '44.9989327779582',
+                'longitude' => '78.35525175421988',
+                'mobile_backend_id' => '1038',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '370',
+                'country_id' => '1',
+                'name' => 'ФМ Жибек Жолу',
+                'contact_phone' => '',
+                'address' => '217 проспект Жибек Жолу, Бишкек, Киргизия',
+                'latitude' => '42.8886119',
+                'longitude' => '74.6372526',
+                'mobile_backend_id' => '1',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '371',
+                'country_id' => '1',
+                'name' => 'ФМ Плаза',
+                'contact_phone' => '',
+                'address' => '113/1 улица Султана Ибраимова, Бишкек, Киргизия',
+                'latitude' => '42.8733001',
+                'longitude' => '74.6172811',
+                'mobile_backend_id' => '2',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '372',
+                'country_id' => '1',
+                'name' => 'ФМ Плаза 2',
+                'contact_phone' => '',
+                'address' => '115 улица Ибраимова, Бишкек, Киргизия',
+                'latitude' => '42.9373212',
+                'longitude' => '74.62366899999999',
+                'mobile_backend_id' => '18',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '373',
+                'country_id' => '1',
+                'name' => 'ФМ 12 мкр',
+                'contact_phone' => '',
+                'address' => '29 улица Нуркамал, Бишкек, Киргизия',
+                'latitude' => '42.8145282',
+                'longitude' => '74.6327931',
+                'mobile_backend_id' => '3',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '374',
+                'country_id' => '1',
+                'name' => 'ФМ Аламедин 1',
+                'contact_phone' => '',
+                'address' => '3в улица Ауэзова, Бишкек, Киргизия',
+                'latitude' => '42.8769161',
+                'longitude' => '74.6904514',
+                'mobile_backend_id' => '4',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '375',
+                'country_id' => '1',
+                'name' => 'ФМ ГУМ',
+                'contact_phone' => '',
+                'address' => '92 проспект Чуй, Бишкек, Киргизия',
+                'latitude' => '42.8755775',
+                'longitude' => '74.61447919999999',
+                'mobile_backend_id' => '10',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '376',
+                'country_id' => '1',
+                'name' => 'ФМ Восток 5 ',
+                'contact_phone' => '',
+                'address' => '109 проспект Чуй, Бишкек, Киргизия',
+                'latitude' => '42.8750586',
+                'longitude' => '74.6264394',
+                'mobile_backend_id' => '17',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '377',
+                'country_id' => '1',
+                'name' => 'ФМ Азия молл',
+                'contact_phone' => '',
+                'address' => '3 просп. Мира, Бишкек, Киргизия',
+                'latitude' => '42.8557225',
+                'longitude' => '74.5852787',
+                'mobile_backend_id' => '14',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '378',
+                'country_id' => '1',
+                'name' => 'ФМ I-Mall',
+                'contact_phone' => '',
+                'address' => '80 Шевченко переулок, Бишкек, Киргизия',
+                'latitude' => '42.8858165',
+                'longitude' => '74.58317350000002',
+                'mobile_backend_id' => '20',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '379',
+                'country_id' => '1',
+                'name' => 'ФМ Россия',
+                'contact_phone' => '',
+                'address' => '100 улица Ахунбаева, Бишкек, Киргизия',
+                'latitude' => '42.8429023',
+                'longitude' => '74.6007422',
+                'mobile_backend_id' => '16',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '380',
+                'country_id' => '1',
+                'name' => 'ФМ Политех',
+                'contact_phone' => '',
+                'address' => '57 проспект Мира, Бишкек, Киргизия',
+                'latitude' => '42.8432864',
+                'longitude' => '74.5856285',
+                'mobile_backend_id' => '8',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '381',
+                'country_id' => '1',
+                'name' => 'ФМ Акун',
+                'contact_phone' => '',
+                'address' => '97/1 проспект Мира, Бишкек, Киргизия',
+                'latitude' => '42.8438361',
+                'longitude' => '74.5863224',
+                'mobile_backend_id' => '13',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '382',
+                'country_id' => '1',
+                'name' => 'ФМ Джал',
+                'contact_phone' => '',
+                'address' => '100 улица Ахунбаева, Бишкек, Киргизия',
+                'latitude' => '42.8429023',
+                'longitude' => '74.6007422',
+                'mobile_backend_id' => '11',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '383',
+                'country_id' => '1',
+                'name' => 'ФМ Бишкек парк',
+                'contact_phone' => '',
+                'address' => '148 ул. Киевская, Бишкек, Киргизия',
+                'latitude' => '42.8747348',
+                'longitude' => '74.5903464',
+                'mobile_backend_id' => '22',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '384',
+                'country_id' => '1',
+                'name' => 'ФМ Ландыш',
+                'contact_phone' => '',
+                'address' => 'көчөсү Жукеева-Пудовкина, Бишкек, Киргизия',
+                'latitude' => '42.8429616',
+                'longitude' => '74.61554389999999',
+                'mobile_backend_id' => '26',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '385',
+                'country_id' => '1',
+                'name' => 'ФМ Весна',
+                'contact_phone' => '',
+                'address' => '66 ул. Калыка Акиева, Бишкек, Киргизия',
+                'latitude' => '42.8774333',
+                'longitude' => '74.5774959',
+                'mobile_backend_id' => '9',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '386',
+                'country_id' => '1',
+                'name' => 'ФМ Юг 2',
+                'contact_phone' => '',
+                'address' => '41 улица Горького, Бишкек, Киргизия',
+                'latitude' => '42.8572807',
+                'longitude' => '74.60576999999999',
+                'mobile_backend_id' => '19',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '387',
+                'country_id' => '1',
+                'name' => 'ФМ Тоголок Молдо',
+                'contact_phone' => '',
+                'address' => '74 улица Тоголок Молдо, Бишкек, Киргизия',
+                'latitude' => '42.88414660000001',
+                'longitude' => '74.5958158',
+                'mobile_backend_id' => '21',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '388',
+                'country_id' => '1',
+                'name' => 'ФМ Салон заказов',
+                'contact_phone' => '',
+                'address' => '147 улица Токтогула, Бишкек, Киргизия',
+                'latitude' => '42.87265909999999',
+                'longitude' => '74.5915023',
+                'mobile_backend_id' => '28',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '389',
+                'country_id' => '1',
+                'name' => 'ФМП Токтогула Исанова',
+                'contact_phone' => '',
+                'address' => '147 улица Токтогула, Бишкек, Киргизия',
+                'latitude' => '42.87265909999999',
+                'longitude' => '74.5915023',
+                'mobile_backend_id' => '24',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '390',
+                'country_id' => '1',
+                'name' => 'ФМ Елки Палки ',
+                'contact_phone' => '',
+                'address' => '171 проспект Юнусалиева, Бишкек, Киргизия',
+                'latitude' => '42.8310931',
+                'longitude' => '74.6216374',
+                'mobile_backend_id' => '5',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '391',
+                'country_id' => '1',
+                'name' => 'ФМ 9 мкр',
+                'contact_phone' => '',
+                'address' => '5 улица Байтик баатыра, Бишкек, Киргизия',
+                'latitude' => '42.8482707',
+                'longitude' => '74.60962239999999',
+                'mobile_backend_id' => '7',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '392',
+                'country_id' => '1',
+                'name' => 'ФМ Ак Эмир',
+                'contact_phone' => '',
+                'address' => '47 улица Алымкула Усенбаева, Бишкек, Киргизия',
+                'latitude' => '42.8686789',
+                'longitude' => '74.6132086',
+                'mobile_backend_id' => '6',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '393',
+                'country_id' => '1',
+                'name' => 'ФМ Улан',
+                'contact_phone' => '',
+                'address' => 'Бишкек, дом №7, Киргизия, 720080',
+                'latitude' => '42.84305492907348',
+                'longitude' => '74.63420216366877',
+                'mobile_backend_id' => '12',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '394',
+                'country_id' => '1',
+                'name' => 'Кофе станция «Технопарк»',
+                'contact_phone' => '',
+                'address' => '1/2 улица Горького, Бишкек, Киргизия',
+                'latitude' => '42.8563681',
+                'longitude' => '74.6251214',
+                'mobile_backend_id' => '37',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '395',
+                'country_id' => '1',
+                'name' => 'ФМ Ак-Орго',
+                'contact_phone' => '',
+                'address' => '107а улица Барпы Алыкулова, Бишкек, Киргизия',
+                'latitude' => '42.8378082',
+                'longitude' => '74.5117442',
+                'mobile_backend_id' => '78',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '396',
+                'country_id' => '3',
+                'name' => 'ФМ Высоцкого',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица В. Высоцкого, 39К4 ',
+                'latitude' => '55.032165',
+                'longitude' => '83.021149',
+                'mobile_backend_id' => 'РТ-000028',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '397',
+                'country_id' => '3',
+                'name' => 'ФМ Гоголя',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Гоголя, 33/1',
+                'latitude' => '55.04397336517006',
+                'longitude' => '82.93535224102301',
+                'mobile_backend_id' => 'РТ-000027',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '398',
+                'country_id' => '3',
+                'name' => 'ФМ Дзержинского',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, проспект Дзержинского, 30/1',
+                'latitude' => '55.056223769840585',
+                'longitude' => '82.97651735887814',
+                'mobile_backend_id' => 'РТ-000026',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '399',
+                'country_id' => '3',
+                'name' => 'ФМ Ильича',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Советский район, микрорайон Академгородок, улица Ильича, 6А',
+                'latitude' => '54.84018817504141',
+                'longitude' => '83.09437923004205',
+                'mobile_backend_id' => 'РТ-000030',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '400',
+                'country_id' => '3',
+                'name' => 'ФМ Кропоткина',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Кропоткина, 118',
+                'latitude' => '55.05597952764955',
+                'longitude' => '82.92990324652375',
+                'mobile_backend_id' => 'РТ-000032',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '401',
+                'country_id' => '3',
+                'name' => 'ФМ Ленина',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Ленина, 59',
+                'latitude' => '55.034216418879964',
+                'longitude' => '82.90059701940396',
+                'mobile_backend_id' => 'РТ-000029',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '402',
+                'country_id' => '3',
+                'name' => 'ФМ Новосибирская',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Новосибирская улица, 19А',
+                'latitude' => '54.988980537768136',
+                'longitude' => '82.84395900646446',
+                'mobile_backend_id' => 'РТ-000025',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '403',
+                'country_id' => '3',
+                'name' => 'ФМ Одоевского',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Одоевского, 1/12 ',
+                'latitude' => '54.936786',
+                'longitude' => '83.099958',
+                'mobile_backend_id' => 'РТ-000001',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '404',
+                'country_id' => '3',
+                'name' => 'ФМ Сибиряков-Гвардейцев',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Сибиряков-Гвардейцев, 62',
+                'latitude' => '54.93937547681524',
+                'longitude' => '82.89641610491084',
+                'mobile_backend_id' => 'РТ-000003',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '405',
+                'country_id' => '3',
+                'name' => 'ФМ Советская',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Советская улица, 37',
+                'latitude' => '55.03101589977701',
+                'longitude' => '82.915813291419',
+                'mobile_backend_id' => 'РТ-000021',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '406',
+                'country_id' => '3',
+                'name' => 'ФМ Троллейная',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Троллейная улица, 130А',
+                'latitude' => '54.966505981459505',
+                'longitude' => '82.85291027128538',
+                'mobile_backend_id' => 'РТ-000023',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '407',
+                'country_id' => '3',
+                'name' => 'ФМ Челюскинцев',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Челюскинцев, 44/2',
+                'latitude' => '55.0401009618349',
+                'longitude' => '82.90828817055221',
+                'mobile_backend_id' => 'РТ-000022',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '408',
+                'country_id' => '3',
+                'name' => 'ФМ Краснообск (Центр)',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирский район, рабочий посёлок Краснообск, 244к4',
+                'latitude' => '54.920017722235364',
+                'longitude' => '82.98463171103015',
+                'mobile_backend_id' => 'РТ-000035',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '409',
+                'country_id' => '3',
+                'name' => 'ФМ Выборная',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Выборная улица, 142/3к3',
+                'latitude' => '55.00241164041527',
+                'longitude' => '83.02008291886611',
+                'mobile_backend_id' => 'РТ-000059',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '410',
+                'country_id' => '3',
+                'name' => 'ФМ Громова-Зорге',
+                'contact_phone' => '',
+                'address' => 'улица Громова, 13, Новосибирск',
+                'latitude' => '54.9358008',
+                'longitude' => '82.9097721',
+                'mobile_backend_id' => 'РТ-000041',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '411',
+                'country_id' => '3',
+                'name' => 'ФМ Кубовая',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Кубовая улица, 94/1 ',
+                'latitude' => '55.127188',
+                'longitude' => '82.900101',
+                'mobile_backend_id' => 'РТ-000040',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '412',
+                'country_id' => '3',
+                'name' => 'ФМ Гребенщикова',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Калининский район, микрорайон Родники',
+                'latitude' => '55.1079146434349',
+                'longitude' => '82.93897731020716',
+                'mobile_backend_id' => 'РТ-000044',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '413',
+                'country_id' => '3',
+                'name' => 'ФМ Плановая',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, Плановая улица, 75/2 к1',
+                'latitude' => '55.0536370285398',
+                'longitude' => '82.89430656169202',
+                'mobile_backend_id' => 'РТ-000060',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '414',
+                'country_id' => '3',
+                'name' => 'ФМ Богаткова',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Бориса Богаткова, 208к1',
+                'latitude' => '55.034438728691036',
+                'longitude' => '82.97412041824644',
+                'mobile_backend_id' => 'РТ-000049',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '415',
+                'country_id' => '3',
+                'name' => 'ФМ Ватутина',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Ватутина, 107',
+                'latitude' => '54.96415610700917',
+                'longitude' => '82.93620580543575',
+                'mobile_backend_id' => 'РТ-000064',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '416',
+                'country_id' => '2',
+                'name' => 'ФМП "УШ-СУНКАР"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Аксай-5, 25',
+                'latitude' => '43.231866727188404',
+                'longitude' => '76.83222479442429',
+                'mobile_backend_id' => '90',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '417',
+                'country_id' => '2',
+                'name' => 'ФМ "АЙНАБУЛАК-3"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Айнабулак-3, 98Б',
+                'latitude' => '43.32069841341329',
+                'longitude' => '76.91681140026883',
+                'mobile_backend_id' => '1040',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '418',
+                'country_id' => '3',
+                'name' => 'ФМ Матрёшки',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Александра Чистякова, 7Ак3',
+                'latitude' => '54.94575221134246',
+                'longitude' => '82.96338722274388',
+                'mobile_backend_id' => 'РТ-000008',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '419',
+                'country_id' => '3',
+                'name' => 'ФМ Кирова',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирск, улица Кирова, 48 ',
+                'latitude' => '55.017751',
+                'longitude' => '82.940237',
+                'mobile_backend_id' => '2027',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '420',
+                'country_id' => '2',
+                'name' => 'ФМ ЖАНГЕЛЬДИНА',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, улица Жангельдина, 193Г ',
+                'latitude' => '43.293279',
+                'longitude' => '76.955275',
+                'mobile_backend_id' => '1051',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '422',
+                'country_id' => '2',
+                'name' => 'ФМП Момышулы',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, Алатауский район, микрорайон Акбулак, улица Хан Шатыр, 287 ',
+                'latitude' => '43.252884',
+                'longitude' => '76.823195',
+                'mobile_backend_id' => '1042',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '423',
+                'country_id' => '2',
+                'name' => 'ФМ "КЕМЕЛ"',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Кемел, улица Аксуат',
+                'latitude' => '43.36314710771094',
+                'longitude' => '76.94351374674306',
+                'mobile_backend_id' => '1044',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '424',
+                'country_id' => '3',
+                'name' => 'ФМ Бердск',
+                'contact_phone' => '',
+                'address' => 'Россия, Новосибирская область, Бердск, улица Ленина, 29 ',
+                'latitude' => '54.763519',
+                'longitude' => '83.095745',
+                'mobile_backend_id' => '2028',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '425',
+                'country_id' => '2',
+                'name' => 'Coffee point Айгерим',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, микрорайон Айгерим-1, улица Саги Ашимова, 96 ',
+                'latitude' => '43.270348',
+                'longitude' => '76.84842',
+                'mobile_backend_id' => '4005',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '426',
+                'country_id' => '2',
+                'name' => 'ФМ Каскелен-2',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Карасайский район, Каскелен, проспект Абылай Хана, 46',
+                'latitude' => '43.20182967841184',
+                'longitude' => '76.63903151042369',
+                'mobile_backend_id' => '1045',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '427',
+                'country_id' => '2',
+                'name' => 'Coffee Point Кыргауылды',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Карасайский район, село Кыргауылды, улица Бирлик, 1А ',
+                'latitude' => '43.171403',
+                'longitude' => '76.774129',
+                'mobile_backend_id' => '4006',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '428',
+                'country_id' => '2',
+                'name' => 'ФМП Талгар',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматинская область, Талгар, улица Кунаева, 95 ',
+                'latitude' => '43.302038',
+                'longitude' => '77.231264',
+                'mobile_backend_id' => '1114',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '429',
+                'country_id' => '2',
+                'name' => 'ФМП Mar Mara',
+                'contact_phone' => '',
+                'address' => 'Казахстан, Алматы, Наурызбайский район, улица Жандосова, 254 ',
+                'latitude' => '43.175499',
+                'longitude' => '76.791638',
+                'mobile_backend_id' => '5005',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '430',
+                'country_id' => '2',
+                'name' => 'Coffee Point Малая Саина ',
+                'contact_phone' => '',
+                'address' => 'Алматы, Варшавский переулок, 11А ',
+                'latitude' => '43.311728',
+                'longitude' => '76.942105',
+                'mobile_backend_id' => '5002',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '431',
+                'country_id' => '2',
+                'name' => 'Coffee Point Жетысу 2 ',
+                'contact_phone' => '',
+                'address' => 'Алматы, микрорайон Жетысу-2, 5А',
+                'latitude' => '43.2247183891611',
+                'longitude' => '76.84337652615918',
+                'mobile_backend_id' => '5001',
+                'status' => ShopStatus::Inactive
+            ],
+            [
+                'id' => '432',
+                'country_id' => '2',
+                'name' => 'ФМ Гулдала',
+                'contact_phone' => '',
+                'address' => 'Алматинская область, Талгарский район, село Гульдала, Кульджинский тракт, 98 ',
+                'latitude' => '43.342859',
+                'longitude' => '77.052428',
+                'mobile_backend_id' => '1047',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '433',
+                'country_id' => '2',
+                'name' => 'Coffee Point Аккент',
+                'contact_phone' => '',
+                'address' => 'Алматы, проспект Райымбека, 515/2 ',
+                'latitude' => '43.241879',
+                'longitude' => '76.819997',
+                'mobile_backend_id' => '1048',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '434',
+                'country_id' => '2',
+                'name' => 'ФМ Калкаман',
+                'contact_phone' => '',
+                'address' => 'Алматы, Наурызбайский район, микрорайон Калкаман-2, улица Байкена Ашимова',
+                'latitude' => '43.2303132204949',
+                'longitude' => '76.7987923234868',
+                'mobile_backend_id' => '1049',
+                'status' => ShopStatus::Active
+            ],
+            [
+                'id' => '435',
+                'country_id' => '3',
+                'name' => ' Coffee Point Галерея',
+                'contact_phone' => '',
+                'address' => 'Новосибирск, улица Гоголя, 13 ',
+                'latitude' => '55.043721',
+                'longitude' => '82.922343',
+                'mobile_backend_id' => '3101',
+                'status' => ShopStatus::Active
+            ]
+        ];
+
+        foreach ($shops as $shop) {
+            Shop::factory()->state($shop)->create();
+        }
+    }
+}
