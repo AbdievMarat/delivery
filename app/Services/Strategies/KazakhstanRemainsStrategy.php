@@ -16,7 +16,7 @@ class KazakhstanRemainsStrategy implements RemainsStrategyInterface
      */
     public function getRemains(array $products, string $shopMobileBackendId): array
     {
-        $wsdl = 'http://192.168.111.3/Roznica2/ws/Ostatki?wsdl';
+        $wsdl = env('KAZAKHSTAN_REMAINS_URL');
         $options = [
             'login' => env('LOGIN_KAZAKHSTAN_REMAINS'),
             'password' => env('PASSWORD_KAZAKHSTAN_REMAINS'),

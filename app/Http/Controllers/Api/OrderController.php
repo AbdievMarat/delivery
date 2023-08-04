@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class OrderController extends Controller
 {
@@ -40,34 +40,50 @@ class OrderController extends Controller
         if ($items) {
             $order->items()->createMany($items); // Создаем связанные модели массово
         }
-        if ($order->id) {
-            $order = new OrderResource($order);
-            return response()->json(['order' => $order], 201);
+
+        if ($order->wasRecentlyCreated) {
+            $success = true;
+            $message = 'Заказ создан';
+            $data = new OrderResource($order);
+            $status = ResponseAlias::HTTP_CREATED;
         } else {
-            return response()->json([
-                'success'   => false,
-                'message'   => 'Заказ не создан',
-                'data'      => []
-            ], 404);
+            $success = false;
+            $message = 'Заказ не создан';
+            $data = [];
+            $status = ResponseAlias::HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+            'data' => $data
+        ], $status);
     }
 
     /**
      * @param int $id
-     * @return JsonResponse|OrderResource
+     * @return JsonResponse
      */
-    public function show(int $id): JsonResponse|OrderResource
+    public function show(int $id): JsonResponse
     {
         $order = Order::query()->where('order_number', '=', $id)->first();
 
         if ($order) {
-            return new OrderResource($order);
+            $success = true;
+            $message = 'Данные заказа';
+            $data = new OrderResource($order);
+            $status = ResponseAlias::HTTP_OK;
         } else {
-            return response()->json([
-                'success'   => false,
-                'message'   => 'Заказ не найдет',
-                'data'      => []
-            ], 404);
+            $success = false;
+            $message = 'Заказ не найдет';
+            $data = [];
+            $status = ResponseAlias::HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+            'data' => $data
+        ], $status);
     }
 }

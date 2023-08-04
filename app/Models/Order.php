@@ -2,15 +2,69 @@
 
 namespace App\Models;
 
+use App\Enums\DeliveryMode;
+use App\Enums\OrderSource;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use DateTime;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property int $id
+ * @property int $order_number
+ * @property string|null $mobile_backend_callback_url
+ * @property string $client_phone
+ * @property string $client_name
+ * @property int $country_id
+ * @property string $address
+ * @property string $latitude
+ * @property string $longitude
+ * @property string|null $entrance
+ * @property string|null $floor
+ * @property string|null $flat
+ * @property float $order_price
+ * @property float $payment_cash
+ * @property float $payment_bonuses
+ * @property PaymentStatus $payment_status
+ * @property string|null $payment_url
+ * @property string|null $comment_for_operator
+ * @property string|null $operator_deadline_date
+ * @property string|null $operator_real_date
+ * @property int|null $user_id_operator
+ * @property string|null $comment_for_manager
+ * @property string|null $manager_deadline_date
+ * @property string|null $manager_real_date
+ * @property int|null $user_id_manager
+ * @property string|null $comment_for_driver
+ * @property string|null $driver_deadline_date
+ * @property string|null $driver_real_date
+ * @property int|null $user_id_driver
+ * @property int|null $shop_id
+ * @property OrderSource $source
+ * @property DeliveryMode $delivery_mode
+ * @property string|null $delivery_date
+ * @property OrderStatus $status
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * @property-read Country $country
+ * @property-read Shop|null $shop
+ * @property-read User|null $operator
+ * @property-read User|null $manager
+ * @property-read User|null $driver
+ * @property-read OrderItem|null $items
+ * @property-read OrderDeliveryInYandex|null $deliveryInYandex
+ * @property-read OrderLog|null $logs
+ *
+ * @mixin Builder
+ */
 class Order extends Model
 {
     use HasFactory;
@@ -111,89 +165,92 @@ class Order extends Model
 
     /**
      * @param Builder $query
-     * @param null $managerRealDateFrom
-     * @param null $managerRealDateTo
+     * @param array $data
      * @return void
      */
-    public function scopeFilter(Builder $query, $managerRealDateFrom = null, $managerRealDateTo = null): void
+    public function scopeFilter(Builder $query, array $data): void
     {
-        $query->when(request('id'), function (Builder $q) {
-            $q->where("{$this->getTable()}.id", '=', request('id'));
-        });
+        if (isset($data['id'])) {
+            $query->where("{$this->getTable()}.id", '=', $data['id']);
+        }
 
-        $query->when(request('order_number'), function (Builder $q) {
-            $q->where("{$this->getTable()}.order_number", '=', request('order_number'));
-        });
+        if (isset($data['order_number'])) {
+            $query->where("{$this->getTable()}.order_number", '=', $data['order_number']);
+        }
 
-        $query->when(request('created_at'), function (Builder $q) {
-            $q->whereDate("{$this->getTable()}.created_at", '=', request('created_at'));
-        });
+        if (isset($data['created_at'])) {
+            $query->whereDate("{$this->getTable()}.created_at", '=', $data['created_at']);
+        }
 
-        $query->when(request('delivery_mode'), function (Builder $q) {
-            $q->where("{$this->getTable()}.delivery_mode", '=', request('delivery_mode'));
-        });
+        if (isset($data['delivery_mode'])) {
+            $query->where("{$this->getTable()}.delivery_mode", '=', $data['delivery_mode']);
+        }
 
-        $query->when(request('source'), function (Builder $q) {
-            $q->where("{$this->getTable()}.source", '=', request('source'));
-        });
+        if (isset($data['source'])) {
+            $query->where("{$this->getTable()}.source", '=', $data['source']);
+        }
 
-        $query->when(request('country_id'), function (Builder $q) {
-            $q->where("{$this->getTable()}.country_id", '=', request('country_id'));
-        });
+        if (isset($data['country_id'])) {
+            $query->where("{$this->getTable()}.country_id", '=', $data['country_id']);
+        }
 
-        $query->when(request('shop_id'), function (Builder $q) {
-            $q->where("{$this->getTable()}.shop_id", '=', request('shop_id'));
-        });
+        if (isset($data['shop_id'])) {
+            $query->where("{$this->getTable()}.shop_id", '=', $data['shop_id']);
+        }
 
-        $query->when(request('user_id_operator'), function (Builder $q) {
-            $q->where("{$this->getTable()}.user_id_operator", '=', request('user_id_operator'));
-        });
+        if (isset($data['user_id_operator'])) {
+            $query->where("{$this->getTable()}.user_id_operator", '=', $data['user_id_operator']);
+        }
 
-        $query->when(request('user_id_manager'), function (Builder $q) {
-            $q->where("{$this->getTable()}.user_id_manager", '=', request('user_id_manager'));
-        });
+        if (isset($data['user_id_manager'])) {
+            $query->where("{$this->getTable()}.user_id_manager", '=', $data['user_id_manager']);
+        }
 
-        $query->when(request('user_id_driver'), function (Builder $q) {
-            $q->where("{$this->getTable()}.user_id_driver", '=', request('user_id_driver'));
-        });
+        if (isset($data['user_id_driver'])) {
+            $query->where("{$this->getTable()}.user_id_driver", '=', $data['user_id_driver']);
+        }
 
-        $query->when(request('client'), function (Builder $q) {
-            $q->where(function ($query) {
-                $client = request('client');
-                $query->where("{$this->getTable()}.client_name", "LIKE", "%{$client}%")
+        if (isset($data['client'])) {
+            $client = $data['client'];
+            $query->where(function ($q) use ($client) {
+                $q->where("{$this->getTable()}.client_name", "LIKE", "%{$client}%")
                     ->orWhere("{$this->getTable()}.client_phone", "LIKE", "%{$client}%");
             });
-        });
+        }
 
-        $query->when($managerRealDateFrom && $managerRealDateTo, function (Builder $q) use ($managerRealDateFrom, $managerRealDateTo) {
-            $q->whereBetween("{$this->getTable()}.manager_real_date", [$managerRealDateFrom, $managerRealDateTo]);
-        });
+        if (isset($data['address'])) {
+            $query->where("{$this->getTable()}.address", 'LIKE', "%{$data['address']}%");
+        }
 
-        $query->when(request('status'), function (Builder $q) {
-            $statuses = (array)request('status');
-            $q->whereIn("{$this->getTable()}.status", $statuses);
-        });
+        if (isset($data['status'])) {
+            $statuses = (array)$data['status'];
+            $query->whereIn("{$this->getTable()}.status", $statuses);
+        }
 
-        $query->when(request('payment_status'), function (Builder $q) {
-            $q->where("{$this->getTable()}.payment_status", '=', request('payment_status'));
-        });
+        if (isset($data['payment_status'])) {
+            $query->where("{$this->getTable()}.payment_status", '=', $data['payment_status']);
+        }
 
-        $query->when(request('date_from') && request('date_to'), function (Builder $q) {
-            $date_from = request('date_from') . 'T00:00:00';
-            $date_to = request('date_to') . 'T00:00:00';
-            $q->whereBetween("{$this->getTable()}.created_at", [$date_from, $date_to]);
-        });
+        if (isset($data['date_from']) && isset($data['date_to'])) {
+            $date_from = $data['date_from'] . 'T00:00:00';
+            $date_to = $data['date_to'] . 'T00:00:00';
+            $query->whereBetween("{$this->getTable()}.created_at", [$date_from, $date_to]);
+        }
 
-        $query->when(request('date_from_delivery') && request('date_to_delivery'), function (Builder $q) {
-            $q->whereBetween("{$this->getTable()}.delivery_date", [request('date_from_delivery'), request('date_to_delivery')]);
-        });
+        if (isset($data['date_from_delivery']) && isset($data['date_to_delivery'])) {
+            $query->whereBetween("{$this->getTable()}.delivery_date", [$data['date_from_delivery'], $data['date_to_delivery']]);
+        }
+
+        if (isset($data['manager_real_date_from']) && isset($data['manager_real_date_to'])) {
+            $query->whereBetween("{$this->getTable()}.manager_real_date", [$data['manager_real_date_from'], $data['manager_real_date_to']]);
+        }
     }
 
     /**
      * @param int $shop_id
      * @return void
      */
-    public function transferOrderToShop(int $shop_id)
+    public function transferOrderToShop(int $shop_id): void
     {
         $this->shop_id = $shop_id;
         $this->status = OrderStatus::InShop->value;
@@ -244,7 +301,7 @@ class Order extends Model
 
     /**
      * @return string|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function calculateTotalProcessingTime(): ?string
     {
@@ -260,5 +317,28 @@ class Order extends Model
         }
 
         return $totalTime;
+    }
+
+    /**
+     * @param string $reasonCancel
+     * @return void
+     */
+    public function statusChangeToCanceledForPaidOrder(string $reasonCancel): void
+    {
+        $commentForOperator = trim($this->comment_for_operator); // удаление пробелов из начала и конца строки
+
+        if (strlen($commentForOperator) === 0) { // если комментария не было
+            $commentForOperator .= '';
+        } else if (str_ends_with($commentForOperator, '.')) { // если есть точка в конце строки, то добавляем пробел
+            $commentForOperator .= ' ';
+        } else {
+            $commentForOperator .= '. '; // иначе добавляем точки в конце строки
+        }
+
+        $commentForOperator .= 'Причина отмены: ' . $reasonCancel;
+
+        $this->comment_for_operator = $commentForOperator;
+        $this->status = OrderStatus::Canceled->value;
+        $this->update();
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\UnsupportedCountryException;
+use App\Models\Country;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
@@ -10,15 +13,28 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class MobileApplicationBackend
 {
     private string $tokenMobileBackend;
+    private Client $client;
+    private array $headers;
 
+    /**
+     * @param int $countryId
+     * @throws UnsupportedCountryException
+     */
     public function __construct(int $countryId)
     {
         $this->tokenMobileBackend = match ($countryId) {
-            1 => env('TOKEN_MOBILE_BACKEND_KG'),
-            2 => env('TOKEN_MOBILE_BACKEND_KZ'),
-            3 => env('TOKEN_MOBILE_BACKEND_RU'),
-            default => ''
+            Country::KYRGYZSTAN_COUNTRY_ID => env('TOKEN_MOBILE_BACKEND_KG'),
+            Country::KAZAKHSTAN_COUNTRY_ID => env('TOKEN_MOBILE_BACKEND_KZ'),
+            Country::RUSSIA_COUNTRY_ID => env('TOKEN_MOBILE_BACKEND_RU'),
+            default => throw new UnsupportedCountryException('Mobile backend not available for this country.'),
         };
+
+        $this->client = new Client();
+
+        $this->headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Authorization' => 'Basic ' . base64_encode($this->tokenMobileBackend . ':'),
+        ];
     }
 
     /**
@@ -29,15 +45,8 @@ class MobileApplicationBackend
     public function productSearch(string $desiredProduct): JsonResponse
     {
         try {
-            $password_curl = '';
-
-            $client = new Client();
-
-            $response = $client->request('GET', env('API_BACKEND_URL') . '/v2/partner/products/product-search', [
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Authorization' => 'Basic ' . base64_encode("$this->tokenMobileBackend:$password_curl")
-                ],
+            $response = $this->client->get(env('API_BACKEND_URL') . '/v2/partner/products/product-search', [
+                'headers' => $this->headers,
                 'query' => [
                     'product' => $desiredProduct
                 ]
@@ -57,23 +66,23 @@ class MobileApplicationBackend
         }
     }
 
+    /**
+     * @param int $orderId
+     * @param int $status
+     * @param int $statusPay
+     * @return JsonResponse|void
+     */
     public function updateStatus(int $orderId, int $status, int $statusPay)
     {
         try {
-            $password_curl = '';
-
             $data = [
                 'order_id' => $orderId,
                 'status_order' => $status,
                 'status_pay' => $statusPay,
             ];
 
-            $client = new Client();
-            $response = $client->post(env('API_BACKEND_URL') . '/v2/partner/lia/lia-result', [
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Authorization' => 'Basic ' . base64_encode("$this->tokenMobileBackend:$password_curl")
-                ],
+            $response = $this->client->post(env('API_BACKEND_URL') . '/v2/partner/lia/lia-result', [
+                'headers' => $this->headers,
                 'form_params' => $data,
             ]);
 

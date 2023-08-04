@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\DeliveryMode;
 use App\Enums\OrderStatus;
+use App\Models\Country;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -25,6 +27,20 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'client_phone' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $countryId = $this->route('order')->country_id;
+
+                    if ($countryId == Country::KYRGYZSTAN_COUNTRY_ID && !preg_match('/^996\d{9}$/', $value)) {
+                        $fail('Телефон клиента должен быть в формате 996555123456.');
+                    } elseif ($countryId == Country::KAZAKHSTAN_COUNTRY_ID && !preg_match('/^77\d{9}$/', $value)) {
+                        $fail('Телефон клиента должен быть в формате 77123456789.');
+                    } elseif ($countryId == Country::RUSSIA_COUNTRY_ID&& !preg_match('/^79\d{9}$/', $value)) {
+                        $fail('Телефон клиента должен быть в формате 79123456789.');
+                    }
+                },
+            ],
             'status' => [new Enum(OrderStatus::class)],
             'shop_id' => ['nullable', Rule::exists('shops', 'id')],
             'address' => ['required', 'min:3', 'max:255'],
@@ -36,6 +52,7 @@ class UpdateOrderRequest extends FormRequest
             'comment_for_operator' => ['nullable', 'max:255'],
             'comment_for_manager' => ['nullable', 'max:255'],
             'comment_for_driver' => ['nullable', 'max:255'],
+            'delivery_mode' => [new Enum(DeliveryMode::class)],
             'delivery_date' => ['nullable', 'date'],
             'delivery_time' => ['nullable', 'date_format:H:i'],
         ];

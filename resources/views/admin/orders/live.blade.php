@@ -15,7 +15,7 @@
                     <th style="min-width: 200px;"></th>
                     <th style="width: 75px;">Общее время</th>
                     <th style="width: 200px;">Клиент</th>
-                    <th>Статусы</th>
+                    <th style="width: 165px;">Статусы</th>
                     <th style="width: 100px;"></th>
                 </tr>
                 </thead>

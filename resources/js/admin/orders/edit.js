@@ -1,4 +1,19 @@
 $(() => {
+    toggleDeliveryDate();
+
+    $(document).on('change', '#delivery_mode', toggleDeliveryDate);
+
+    function toggleDeliveryDate() {
+        if ($('#delivery_mode').val() === 'В указанную дату') {
+            $('#delivery_date, label[for="delivery_date"]').removeClass('d-none');
+            $('#delivery_time, label[for="delivery_time"]').removeClass('d-none');
+        }
+        else {
+            $('#delivery_date, label[for="delivery_date"]').addClass('d-none');
+            $('#delivery_time, label[for="delivery_time"]').addClass('d-none');
+        }
+    }
+
     $(document).on('click', '.cancel-mobile-application-paid-order', function (e) {
         e.preventDefault();
 
@@ -97,14 +112,16 @@ $(() => {
     // создание заказа в яндекс доставке
     $(document).on('click', '.create-order-yandex', function () {
         const csrf_token = $('meta[name="csrf-token"]').attr('content');
+        const order_id = $('#order_id').val();
 
         $.ajax({
             type: "POST",
-            url: "/admin/store_order_yandex",
+            url: `/admin/store_order_yandex/${order_id}`,
             headers: {'X-CSRF-TOKEN': csrf_token},
             dataType: "json",
             data: {
-                order_id: $('#order_id').val(),
+                country_id: $('#country_id').val(),
+                client_phone: $('#client_phone').val(),
                 shop_id: $('#shop_id').val(),
                 address: $('#address').val(),
                 latitude: $('#latitude').val(),
@@ -232,6 +249,8 @@ $(() => {
                         country_id
                     },
                 }).done((successResponse) => {
+                    $('#status').val('В магазине');
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Заказ в Yandex был подтвержден!',
@@ -252,12 +271,9 @@ $(() => {
 
             $.ajax({
                 type: "GET",
-                url: `/admin/get_optimal_order_in_yandex`,
+                url: `/admin/get_optimal_order_in_yandex/${order_id}`,
                 headers: {'X-CSRF-TOKEN': csrf_token},
                 dataType: "json",
-                data: {
-                    order_id
-                },
             }).done((successResponse) => {
                 $('#count_of_orders_to_yandex_awaiting_estimate').val(successResponse.count_of_orders_to_yandex_awaiting_estimate);
 

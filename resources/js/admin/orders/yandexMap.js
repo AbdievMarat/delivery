@@ -186,9 +186,8 @@ function init() {
 
         $.ajax({
             type: 'GET',
-            url: '/admin/get_shops_of_country',
+            url: `/admin/get_shops_of_country/${country_id}`,
             headers: {'X-CSRF-TOKEN': csrf_token},
-            data: {country_id},
         }).done(successResponse => {
             // вывод магазинов на карте по координатам
             let shopGeoObject;

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\UnsupportedCountryException;
+use App\Models\Country;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -12,14 +14,26 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class DeliveryYandex
 {
     private string $tokenYandex;
+    private Client $client;
+    private array $headers;
 
+    /**
+     * @param int $countryId
+     * @throws UnsupportedCountryException
+     */
     public function __construct(int $countryId)
     {
         $this->tokenYandex = match ($countryId) {
-            2 => env('TOKEN_DELIVERY_YANDEX_KZ'),
-            3 => env('TOKEN_DELIVERY_YANDEX_RU'),
-            default => ''
+            Country::KAZAKHSTAN_COUNTRY_ID => env('TOKEN_DELIVERY_YANDEX_KZ'),
+            Country::RUSSIA_COUNTRY_ID => env('TOKEN_DELIVERY_YANDEX_RU'),
+            default => throw new UnsupportedCountryException('Delivery yandex not available for this country.')
         };
+
+        $this->client = new Client();
+        $this->headers = [
+            'Accept-Language' => 'ru',
+            'Authorization' => 'Bearer ' . $this->tokenYandex,
+        ];
     }
 
     /**
@@ -30,12 +44,8 @@ class DeliveryYandex
     public function createOrderYandex(array $yandexOrderData)
     {
         try {
-            $client = new Client();
-            $response = $client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/create', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/create', [
+                'headers' => $this->headers,
                 'query' => ['request_id' => Str::uuid()->toString()],
                 'json' => $yandexOrderData,
             ]);
@@ -44,7 +54,7 @@ class DeliveryYandex
                 $body = $response->getBody()->getContents();
                 $data = json_decode($body, true);
 
-                return response()->json($data, 201);
+                return response()->json($data, ResponseAlias::HTTP_CREATED);
             } else if($response->getStatusCode() === ResponseAlias::HTTP_BAD_REQUEST) {
                 $body = $response->getBody()->getContents();
                 $data = json_decode($body, true);
@@ -67,12 +77,8 @@ class DeliveryYandex
         $data['version'] = 1;
 
         try {
-            $client = new Client();
-            $response = $client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/claims/accept', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/claims/accept', [
+                'headers' => $this->headers,
                 'query' => ['claim_id' => $yandexId],
                 'json' => $data,
             ]);
@@ -96,12 +102,8 @@ class DeliveryYandex
     public function cancelInfoOrderYandex(string $yandexId)
     {
         try {
-            $client = new Client();
-            $response = $client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/cancel-info', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/cancel-info', [
+                'headers' => $this->headers,
                 'query' => ['claim_id' => $yandexId],
             ]);
 
@@ -128,12 +130,8 @@ class DeliveryYandex
         $data['cancel_state'] = $cancelState;
 
         try {
-            $client = new Client();
-            $response = $client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/claims/cancel', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/claims/cancel', [
+                'headers' => $this->headers,
                 'query' => ['claim_id' => $yandexId],
                 'json' => $data,
             ]);
@@ -157,12 +155,8 @@ class DeliveryYandex
     public function getDriverPositionYandex(string $yandexId)
     {
         try {
-            $client = new Client();
-            $response = $client->get('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/claims/performer-position', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->get('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/claims/performer-position', [
+                'headers' => $this->headers,
                 'query' => ['claim_id' => $yandexId],
             ]);
 
@@ -187,12 +181,8 @@ class DeliveryYandex
         $data['claim_id'] = $yandexId;
 
         try {
-            $client = new Client();
-            $response = $client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/driver-voiceforwarding', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/driver-voiceforwarding', [
+                'headers' => $this->headers,
                 'json' => $data,
             ]);
 
@@ -215,12 +205,8 @@ class DeliveryYandex
     public function getOrderYandexInfo(string $yandexId)
     {
         try {
-            $client = new Client();
-            $response = $client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/info', [
-                'headers' => [
-                    'Accept-Language' => 'ru',
-                    'Authorization' => 'Bearer ' . $this->tokenYandex,
-                ],
+            $response = $this->client->post('https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/info', [
+                'headers' => $this->headers,
                 'query' => ['claim_id' => $yandexId],
             ]);
 

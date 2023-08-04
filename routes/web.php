@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ShopController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\YandexOrderController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\OrderReportController;
 use App\Http\Controllers\Shop\IssuedOrdersController;
@@ -21,22 +23,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,operator
         'countries' => CountryController::class,
         'shops' => ShopController::class,
     ]);
+    Route::get('get_shops_of_country/{country}', [CountryController::class, 'getShopsOfCountry'])->name('get_shops_of_country');
+
+    Route::get('product_search', [ProductController::class, 'search'])->name('product_search');
+    Route::get('get_remains_products', [ProductController::class, 'getRemainsProducts'])->name('get_remains_products');
+
     Route::resource('orders',OrderController::class)->except(['destroy']);
-    Route::get('product_search', [OrderController::class, 'productSearch'])->name('product_search');
-    Route::get('get_remains_products', [OrderController::class, 'getRemainsProducts'])->name('get_remains_products');
-    Route::get('get_shops_of_country', [OrderController::class, 'getShopsOfCountry'])->name('get_shops_of_country');
-    Route::post('store_order_yandex', [OrderController::class, 'storeOrderYandex'])->name('store_order_yandex');
-    Route::get('cancel_info_order_yandex', [OrderController::class, 'cancelInfoOrderYandex'])->name('cancel_info_order_yandex');
-    Route::put('cancel_order_yandex', [OrderController::class, 'cancelOrderYandex'])->name('cancel_order_yandex');
-    Route::put('accept_order_yandex', [OrderController::class, 'acceptOrderYandex'])->name('accept_order_yandex');
-    Route::get('get_orders_in_yandex/{order}', [OrderController::class, 'getOrdersInYandex'])->name('get_orders_in_yandex');
-    Route::get('get_optimal_order_in_yandex', [OrderController::class, 'getOptimalOrderInYandex'])->name('get_optimal_order_in_yandex');
-    Route::get('get_driver_position_yandex', [OrderController::class, 'getDriverPositionYandex'])->name('get_driver_position_yandex');
+    Route::get('live_orders', [OrderController::class, 'liveOrders'])->name('live_orders');
     Route::put('cancel_unpaid_order/{order}', [OrderController::class, 'cancelUnpaidOrder'])->name('cancel_unpaid_order');
     Route::put('restore_paid_order/{order}', [OrderController::class, 'restorePaidOrder'])->name('restore_paid_order');
     Route::put('cancel_mobile_application_paid_order/{order}', [OrderController::class, 'cancelMobileApplicationPaidOrder'])->name('cancel_mobile_application_paid_order');
     Route::put('cancel_other_paid_order/{order}', [OrderController::class, 'cancelOtherPaidOrder'])->name('cancel_other_paid_order');
-    Route::get('live_orders', [OrderController::class, 'liveOrders'])->name('live_orders');
+
+    Route::post('store_order_yandex/{order}', [YandexOrderController::class, 'storeOrderYandex'])->name('store_order_yandex');
+    Route::get('cancel_info_order_yandex', [YandexOrderController::class, 'cancelInfoOrderYandex'])->name('cancel_info_order_yandex');
+    Route::put('cancel_order_yandex', [YandexOrderController::class, 'cancelOrderYandex'])->name('cancel_order_yandex');
+    Route::put('accept_order_yandex', [YandexOrderController::class, 'acceptOrderYandex'])->name('accept_order_yandex');
+    Route::get('get_orders_in_yandex/{order}', [YandexOrderController::class, 'getOrdersInYandex'])->name('get_orders_in_yandex');
+    Route::get('get_optimal_order_in_yandex/{order}', [YandexOrderController::class, 'getOptimalOrderInYandex'])->name('get_optimal_order_in_yandex');
+    Route::get('get_driver_position_yandex', [YandexOrderController::class, 'getDriverPositionYandex'])->name('get_driver_position_yandex');
 });
 
 Route::prefix('shop')->name('shop.')->middleware(['auth', 'role:manager'])->group(function () {

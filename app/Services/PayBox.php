@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Order;
+use App\Exceptions\UnsupportedCountryException;
+use App\Models\Country;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
@@ -13,52 +15,42 @@ class PayBox
     private string $merchantId;
     private string $merchantSign;
     private string $currencyName;
-
-    public function __construct(int $countryId)
-    {
-        $this->merchantId = match ($countryId) {
-            1 => env('PAY_BOX_KG_MERCHANT_ID'),
-            2 => env('PAY_BOX_KZ_MERCHANT_ID'),
-            3 => env('PAY_BOX_RU_MERCHANT_ID'),
-            default => ''
-        };
-
-        $this->merchantSign = match ($countryId) {
-            1 => env('PAY_BOX_KG_MERCHANT_SIGN'),
-            2 => env('PAY_BOX_KZ_MERCHANT_SIGN'),
-            3 => env('PAY_BOX_RU_MERCHANT_SIGN'),
-            default => ''
-        };
-
-        $this->currencyName = match ($countryId) {
-            1 => 'KGS',
-            2 => 'KZT',
-            3 => 'RUB',
-            default => ''
-        };
-    }
+    private Client $client;
+    private array $headers;
 
     /**
-     * @param array $data
-     * @param string $methodPath
-     * @return string
+     * @param int $countryId
+     * @throws UnsupportedCountryException
      */
-    private function generateSignature(array $data, string $methodPath): string
+    public function __construct(int $countryId)
     {
-        // Сортировка полей сообщения в алфавитном порядке
-        ksort($data);
+        switch ($countryId) {
+            case Country::KYRGYZSTAN_COUNTRY_ID:
+                $this->merchantId = env('PAY_BOX_KG_MERCHANT_ID');
+                $this->merchantSign = env('PAY_BOX_KG_MERCHANT_SIGN');
+                $this->currencyName = 'KGS';
+                break;
 
-        // Добавление типа операции в начало массива
-        array_unshift($data, $methodPath);
+            case Country::KAZAKHSTAN_COUNTRY_ID:
+                $this->merchantId = env('PAY_BOX_KZ_MERCHANT_ID');
+                $this->merchantSign = env('PAY_BOX_KZ_MERCHANT_SIGN');
+                $this->currencyName = 'KZT';
+                break;
 
-        $flattenedData = $this->flattenArray($data);
+            case Country::RUSSIA_COUNTRY_ID:
+                $this->merchantId = env('PAY_BOX_RU_MERCHANT_ID');
+                $this->merchantSign = env('PAY_BOX_RU_MERCHANT_SIGN');
+                $this->currencyName = 'RUB';
+                break;
 
-        // Добавление секретного ключа в конец массива
-        $flattenedData[] = $this->merchantSign;
+            default:
+                throw new UnsupportedCountryException('PayBox not available for this country.');
+        }
 
-        $concatenatedData = implode(';', $flattenedData);
-
-        return md5($concatenatedData);
+        $this->client = new Client();
+        $this->headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ];
     }
 
     /**
@@ -100,11 +92,8 @@ class PayBox
         $requestData['pg_sig'] = $signature;
 
         try {
-            $client = new Client();
-            $response = $client->post(env('PAY_BOX_URL') . '/init_payment.php', [
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
+            $response = $this->client->post(env('PAY_BOX_URL') . '/init_payment.php', [
+                'headers' => $this->headers,
                 'body' => http_build_query($requestData),
             ]);
 
@@ -139,11 +128,8 @@ class PayBox
         $requestData['pg_sig'] = $signature;
 
         try {
-            $client = new Client();
-            $response = $client->post(env('PAY_BOX_URL') . '/revoke.php', [
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
+            $response = $this->client->post(env('PAY_BOX_URL') . '/revoke.php', [
+                'headers' => $this->headers,
                 'body' => http_build_query($requestData),
             ]);
 
@@ -157,6 +143,29 @@ class PayBox
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * @param array $data
+     * @param string $methodPath
+     * @return string
+     */
+    private function generateSignature(array $data, string $methodPath): string
+    {
+        // Сортировка полей сообщения в алфавитном порядке
+        ksort($data);
+
+        // Добавление типа операции в начало массива
+        array_unshift($data, $methodPath);
+
+        $flattenedData = $this->flattenArray($data);
+
+        // Добавление секретного ключа в конец массива
+        $flattenedData[] = $this->merchantSign;
+
+        $concatenatedData = implode(';', $flattenedData);
+
+        return md5($concatenatedData);
     }
 
     /**

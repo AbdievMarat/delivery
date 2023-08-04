@@ -7,6 +7,7 @@ use App\Events\NewAndProcessedOrderEvent;
 use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Shop;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class OrderObserver
@@ -16,12 +17,11 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        $orderLog = new OrderLog();
-        $orderLog->order_id = $order->id;
-        $orderLog->message = 'Заказ создан';
-        $orderLog->user_name = Auth::user()->name ?? '';
-        $orderLog->user_id = Auth::id() ?? 1;
-        $orderLog->save();
+        $order->logs()->create([
+            'message' => 'Заказ создан',
+            'user_name' => Auth::user()->name ?? '',
+            'user_id' => Auth::id() ?? User::ADMIN_USER_ID,
+        ]);
 
         event(new NewAndProcessedOrderEvent());
     }
@@ -38,12 +38,11 @@ class OrderObserver
 
         if (isset($changes['status'])) {
             if ($changes['status'] == OrderStatus::Delivered->value) {
-                $orderLog = new OrderLog();
-                $orderLog->order_id = $order->id;
-                $orderLog->message = 'Курьер доставил заказ';
-                $orderLog->user_name = 'Yandex';
-                $orderLog->user_id = 6;
-                $orderLog->save();
+                $order->logs()->create([
+                    'message' => 'Курьер доставил заказ',
+                    'user_name' => 'Yandex',
+                    'user_id' => User::YANDEX_USER_ID,
+                ]);
 
                 event(new NewAndProcessedOrderEvent());
             } else if ($changes['status'] == OrderStatus::Canceled->value) {
@@ -51,6 +50,10 @@ class OrderObserver
             } else {
                 $messages[] = "Статус заказа был изменен: {$oldOrderData['status']} -> {$changes['status']}";
             }
+        }
+
+        if (isset($changes['client_phone'])) {
+            $messages[] = "Номер был изменен: {$oldOrderData['client_phone']} -> {$changes['client_phone']}";
         }
 
         if (isset($changes['shop_id'])) {
@@ -115,6 +118,10 @@ class OrderObserver
             }
         }
 
+        if (isset($changes['delivery_mode'])) {
+            $messages[] = "Режим доставки изменен: {$oldOrderData['delivery_mode']} -> {$changes['delivery_mode']}";
+        }
+
         if (isset($changes['delivery_date'])) {
             if (date('Y-m-d H:i', strtotime($oldOrderData['delivery_date'])) !== date('Y-m-d H:i', strtotime($changes['delivery_date']))) {
                 $messages[] = "Дата и время доставки была изменена: {$oldOrderData['delivery_date']} -> {$changes['delivery_date']}";
@@ -126,7 +133,7 @@ class OrderObserver
             $messagesData[] = [
                 'message' => $message,
                 'user_name' => Auth::user()->name ?? '',
-                'user_id' => Auth::id() ?? 1,
+                'user_id' => Auth::id() ?? User::ADMIN_USER_ID,
             ];
         }
 

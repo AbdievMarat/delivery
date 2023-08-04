@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\CountryStatus;
+use App\Models\Country;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -35,7 +36,7 @@ class UpdateCountryRequest extends FormRequest
             'yandex_tariffs' => [
                 'array',
                 Rule::requiredIf(function () {
-                    return in_array($this->route('country')->id, [2, 3]);
+                    return in_array($this->route('country')->id, [Country::KAZAKHSTAN_COUNTRY_ID, Country::RUSSIA_COUNTRY_ID]);
                 }),
             ],
             'status' => [new Enum(CountryStatus::class)],

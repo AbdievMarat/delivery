@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 
 class ShopController extends Controller
@@ -20,15 +21,17 @@ class ShopController extends Controller
     {
         $this->middleware('can:delete,shop')->only('destroy');
     }
+
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
-    public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $shops = Shop::query()
             ->select("shops.*", "countries.name AS country_name")
             ->join("countries", "countries.id", "=", "shops.country_id")
-            ->filter()
+            ->filter($request->all())
             ->orderBy('shops.id')
             ->paginate(10)
             ->withQueryString();
@@ -40,7 +43,7 @@ class ShopController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
     public function create(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
@@ -51,7 +54,8 @@ class ShopController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreShopRequest $request
+     * @return RedirectResponse
      */
     public function store(StoreShopRequest $request): RedirectResponse
     {
@@ -70,7 +74,8 @@ class ShopController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * @param Shop $shop
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
     public function edit(Shop $shop): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
@@ -81,18 +86,22 @@ class ShopController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateShopRequest $request
+     * @param Shop $shop
+     * @return Application|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
      */
     public function update(UpdateShopRequest $request, Shop $shop): Application|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
     {
         $shop->update($request->validated());
+
         $previous_url = $request->post('previous_url');
 
         return redirect($previous_url)->with('success', ['text' => 'Успешно обновлено!']);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param Shop $shop
+     * @return RedirectResponse
      */
     public function destroy(Shop $shop): RedirectResponse
     {

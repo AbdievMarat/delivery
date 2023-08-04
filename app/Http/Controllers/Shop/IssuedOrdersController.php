@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 class IssuedOrdersController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+     */
     public function index(Request $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $managerRealDateFrom = $request->get('manager_real_date_from') ?? date('Y-m-d');
@@ -20,12 +24,16 @@ class IssuedOrdersController extends Controller
 
         $attachedShops = Auth::user()->attached_shops ?? [];
 
+        $data = $request->all();
+        $data['manager_real_date_from'] = $managerRealDateFrom;
+        $data['manager_real_date_to'] = $managerRealDateTo;
+
         $orders = Order::with('items')
             ->select("orders.*")
             ->where('status', '=', OrderStatus::Delivered)
             ->whereNotNull('manager_real_date')
             ->whereIn('shop_id', $attachedShops)
-            ->filter($managerRealDateFrom, $managerRealDateTo)
+            ->filter($data)
             ->paginate(10)
             ->withQueryString();
 

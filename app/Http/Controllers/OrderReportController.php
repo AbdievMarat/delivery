@@ -16,37 +16,45 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class OrderReportController extends Controller
 {
     /**
+     * @param Request $request
      * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
-    public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        $orders = [];
-        $totalOrderPrice = 0;
-        $totalPaymentCash = 0;
-        $totalPaymentBonuses = 0;
-        $totalDeliveryPrice = 0;
-        $totalPriceInYandex = 0;
+        $dateFrom = $request->get('date_from') ?? date('Y-m-d', strtotime("-1 month"));
+        $dateTo = $request->get('date_to') ?? date("Y-m-d");
 
-        if (!empty(Request::all())) {
-            if(env('DB_CONNECTION') === 'sqlite') {
+        if (!empty($request->all())) {
+            if (env('DB_CONNECTION') === 'sqlite') {
                 $rawItems = "GROUP_CONCAT(order_items.product_sku || ' - ' || order_items.product_name || ' - ' || order_items.product_price || ' - ' || order_items.quantity || ' шт.', '; ') AS items";
             } else { // mysql
                 $rawItems = "GROUP_CONCAT(CONCAT(order_items.product_sku, ' - ', order_items.product_name, ' - ', order_items.product_price, ' - ', order_items.quantity, ' шт.') SEPARATOR '; ') AS items";
             }
 
+            $data = $request->all();
+            $data['date_from'] = $dateFrom;
+            $data['date_to'] = $dateTo;
+
+            if($request->has('yandex_id')) {
+                $order_id = OrderDeliveryInYandex::query()
+                    ->where('yandex_id', '=', $request->get('yandex_id'))
+                    ->pluck('order_id')
+                    ->first();
+                $data['id'] = $order_id;
+            }
             $spentOrdersInYandex = Order::query()
                 ->selectRaw('SUM(order_delivery_in_yandex.final_price) as total_price, order_delivery_in_yandex.order_id')
                 ->leftJoin("order_delivery_in_yandex", "orders.id", "=", "order_delivery_in_yandex.order_id")
                 ->groupBy('order_delivery_in_yandex.order_id')
-                ->filter();
+                ->filter($data);
 
             $orders = Order::query()
                 ->select(
@@ -67,7 +75,7 @@ class OrderReportController extends Controller
                 ->leftJoinSub($spentOrdersInYandex, 'spent_orders_in_yandex', function ($join) {
                     $join->on('spent_orders_in_yandex.order_id', '=', 'orders.id');
                 })
-                ->filter()
+                ->filter($data)
                 ->groupBy(
                     "orders.order_number", "orders.created_at", "orders.delivery_mode", "orders.source", "countries.name", "shops.name",
                     "users.name", "orders.client_name", "orders.client_phone", "orders.address", "orders.order_price", "orders.payment_cash",
@@ -78,19 +86,21 @@ class OrderReportController extends Controller
                 ->paginate(10)
                 ->withQueryString();
 
-            $totalOrderPrice = Order::query()->filter()->sum('order_price');
-            $totalPaymentCash = Order::query()->filter()->sum('payment_cash');
-            $totalPaymentBonuses = Order::query()->filter()->sum('payment_bonuses');
+            $totalOrderPayment = Order::query()
+                ->filter($data)
+                ->selectRaw('SUM(order_price) as total_order_price, SUM(payment_cash) as total_payment_cash, SUM(payment_bonuses) as total_payment_bonuses')
+                ->first();
+
             $totalDeliveryPrice = Order::query()
                 ->leftJoin('order_items AS oi', function ($join) {
                     $join->on('orders.id', '=', 'oi.order_id')
                         ->where('oi.product_name', '=', 'Доставка');
                 })
-                ->filter()
+                ->filter($data)
                 ->sum('oi.product_price');
             $totalPriceInYandex = Order::query()
                 ->leftJoin("order_delivery_in_yandex", "orders.id", "=", "order_delivery_in_yandex.order_id")
-                ->filter()
+                ->filter($data)
                 ->sum('order_delivery_in_yandex.final_price');
         }
         if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('operator')) {
@@ -114,30 +124,53 @@ class OrderReportController extends Controller
             ->pluck('name', 'id')
             ->all();
 
-        return view(
-            'order_reports.index', compact(
-                'orders', 'deliveryModes', 'sources', 'countries', 'statuses', 'paymentStatuses', 'operators', 'shops', 'totalOrderPrice', 'totalPaymentCash', 'totalPaymentBonuses', 'totalDeliveryPrice', 'totalPriceInYandex'
-            )
-        );
+        return view('order_reports.index', [
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
+            'deliveryModes' => $deliveryModes,
+            'sources' => $sources,
+            'countries' => $countries,
+            'statuses' => $statuses,
+            'paymentStatuses' => $paymentStatuses,
+            'operators' => $operators,
+            'shops' => $shops,
+            'orders' => $orders ?? [],
+            'totalOrderPrice' => $totalOrderPayment->total_order_price ?? 0,
+            'totalPaymentCash' => $totalOrderPayment->total_payment_cash ?? 0,
+            'totalPaymentBonuses' => $totalOrderPayment->total_payment_bonuses ?? 0,
+            'totalDeliveryPrice' => $totalDeliveryPrice ?? 0,
+            'totalPriceInYandex' => $totalPriceInYandex ?? 0,
+        ]);
     }
 
     /**
+     * @param Request $request
      * @return BinaryFileResponse
      */
-    public function exportToExcel(): BinaryFileResponse
+    public function exportToExcel(Request $request): BinaryFileResponse
     {
-        if(env('DB_CONNECTION') === 'sqlite') {
+        if (env('DB_CONNECTION') === 'sqlite') {
             $rawItems = "GROUP_CONCAT(order_items.product_sku || ' - ' || order_items.product_name || ' - ' || order_items.product_price || ' - ' || order_items.quantity || ' шт.', '; ') AS items";
         } else { // mysql
             $rawItems = "GROUP_CONCAT(CONCAT(order_items.product_sku, ' - ', order_items.product_name, ' - ', order_items.product_price, ' - ', order_items.quantity, ' шт.') SEPARATOR '; ') AS items";
+        }
+
+        $data = $request->all();
+
+        if($request->has('yandex_id')) {
+            $order_id = OrderDeliveryInYandex::query()
+                ->where('yandex_id', '=', $request->get('yandex_id'))
+                ->pluck('order_id')
+                ->first();
+            $data['id'] = $order_id;
         }
 
         $spentOrdersInYandex = Order::query()
             ->selectRaw('SUM(order_delivery_in_yandex.final_price) as total_price, order_delivery_in_yandex.order_id')
             ->leftJoin("order_delivery_in_yandex", "orders.id", "=", "order_delivery_in_yandex.order_id")
             ->groupBy('order_delivery_in_yandex.order_id')
-            ->filter();
-        
+            ->filter($data);
+
         $orders = Order::query()
             ->select(
                 "orders.order_number", "orders.created_at", "orders.delivery_mode", "orders.source", "countries.name AS country_name", "shops.name AS shop_name",
@@ -157,7 +190,7 @@ class OrderReportController extends Controller
             ->leftJoinSub($spentOrdersInYandex, 'spent_orders_in_yandex', function ($join) {
                 $join->on('spent_orders_in_yandex.order_id', '=', 'orders.id');
             })
-            ->filter()
+            ->filter($data)
             ->groupBy(
                 "orders.order_number", "orders.created_at", "orders.delivery_mode", "orders.source", "countries.name", "shops.name",
                 "users.name", "orders.client_name", "orders.client_phone", "orders.address", "orders.order_price", "orders.payment_cash",

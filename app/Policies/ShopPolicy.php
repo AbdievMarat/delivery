@@ -14,6 +14,6 @@ class ShopPolicy
      */
     public function delete(User $user, Shop $shop): bool
     {
-        return $user->id === 1;
+        return $user->id === User::ADMIN_USER_ID;
     }
 }

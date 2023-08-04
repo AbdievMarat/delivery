@@ -16,6 +16,11 @@
         <td>{{ $order->source }}</td>
         <td>{{ $order->country_name }}</td>
         <td>
+            @if($order->address)
+                <span class="text-primary mb-2">
+                    <i class="bi bi-map"></i> {{ $order->address }}
+                </span><br>
+            @endif
             @if(($order->operator && $order->operator->name))
                 <b>Оператор:</b> {{ $order->operator->name }} <br>
             @endif

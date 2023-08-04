@@ -10,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -30,20 +31,7 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'order_number' => ['required', Rule::unique('orders', 'order_number')],
-            'client_phone' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    $countryId = $this->input('country_id');
-
-                    if ($countryId == 1 && !preg_match('/^996\d{9}$/', $value)) {
-                        $fail('Телефон клиента должен быть в формате 996555123456.');
-                    } elseif ($countryId == 2 && !preg_match('/^77\d{9}$/', $value)) {
-                        $fail('Телефон клиента должен быть в формате 77123456789.');
-                    } elseif ($countryId == 3 && !preg_match('/^79\d{9}$/', $value)) {
-                        $fail('Телефон клиента должен быть в формате 79123456789.');
-                    }
-                },
-            ],
+            'client_phone' => ['required'],
             'client_name' => ['required', 'max:255'],
             'country_id' => ['required', Rule::exists('countries', 'id')],
             'address' => ['required', 'min:3', 'max:255'],
@@ -66,12 +54,16 @@ class StoreOrderRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    /**
+     * @param Validator $validator
+     * @return void
+     */
+    public function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ], 422));
+            'success' => false,
+            'message' => 'Validation errors',
+            'data' => $validator->errors()
+        ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

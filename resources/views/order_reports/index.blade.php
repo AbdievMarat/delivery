@@ -12,24 +12,24 @@
             <div class="panel panel-white panel-body">
                 <div class="row">
                     <div class="col-md-1">
-                        <input type="text" form="reportOrders" placeholder="Заказ №" title="Заказ №" name="id"
+                        <input type="text" form="reportOrders" placeholder="Заказ №" title="Заказ №" name="order_number"
                                autocomplete="off"
-                               value="{{ Request::get('id') }}" class="form-control">
-                        <input type="hidden" form="orderReportExportToExcel" name="id" value="{{ Request::get('id') }}">
+                               value="{{ Request::get('order_number') }}" class="form-control">
+                        <input type="hidden" form="orderReportExportToExcel" name="order_number" value="{{ Request::get('order_number') }}">
                     </div>
                     <div class="col-md-2">
                         <input type="date" form="reportOrders" placeholder="Дата от" title="Дата от" name="date_from"
                                autocomplete="off"
-                               value="{{ Request::get('date_from') }}" class="form-control">
+                               value="{{ $dateFrom }}" class="form-control">
                         <input type="hidden" form="orderReportExportToExcel" name="date_from"
-                               value="{{ Request::get('date_from') }}">
+                               value="{{ $dateFrom }}">
                     </div>
                     <div class="col-md-2">
                         <input type="date" form="reportOrders" placeholder="Дата до" title="Дата до" name="date_to"
                                autocomplete="off"
-                               value="{{ Request::get('date_to') }}" class="form-control">
+                               value="{{ $dateTo }}" class="form-control">
                         <input type="hidden" form="orderReportExportToExcel" name="date_to"
-                               value="{{ Request::get('date_to') }}">
+                               value="{{ $dateTo }}">
                     </div>
                     <div class="col-md-2">
                         <select name="delivery_mode" form="reportOrders" class="form-control" title="Тип доставки">
@@ -81,7 +81,14 @@
                 </div>
 
                 <div class="row mt-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <input type="text" form="reportOrders" placeholder="Yandex №" title="Yandex №" name="yandex_id"
+                               autocomplete="off"
+                               value="{{ Request::get('yandex_id') }}" class="form-control">
+                        <input type="hidden" form="orderReportExportToExcel" name="yandex_id"
+                               value="{{ Request::get('yandex_id') }}">
+                    </div>
+                    <div class="col-md-2">
                         <input type="text" form="reportOrders" placeholder="Клиент" title="Клиент" name="client"
                                autocomplete="off"
                                value="{{ Request::get('client') }}" class="form-control">
@@ -118,7 +125,7 @@
                         <input type="hidden" form="orderReportExportToExcel" name="user_id_operator"
                                value="{{ Request::get('user_id_operator') }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="shop_id" form="reportOrders" class="form-control single-select" title="Магазин">
                             <option value="">Магазин</option>
                             @foreach($shops as $id => $shop)

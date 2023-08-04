@@ -3,15 +3,58 @@
 namespace App\Models;
 
 use App\Events\OrderDeliveryInYandexEvent;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $order_id
+ * @property string $yandex_id
+ * @property int $shop_id
+ * @property string $shop_address
+ * @property string $shop_latitude
+ * @property string $shop_longitude
+ * @property string $client_address
+ * @property string $client_latitude
+ * @property string $client_longitude
+ * @property string|null $tariff
+ * @property float $offer_price
+ * @property float $final_price
+ * @property string|null $driver_phone
+ * @property string|null $driver_phone_ext
+ * @property int $user_id
+ * @property string|null $status
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * @property-read Order $order
+ * @property-read Shop $shops
+ * @property-read User $user
+ *
+ * @mixin Builder
+ */
 class OrderDeliveryInYandex extends Model
 {
     use HasFactory;
 
     protected $table = 'order_delivery_in_yandex';
+
+    protected $fillable = [
+        'yandex_id',
+        'shop_id',
+        'shop_address',
+        'shop_latitude',
+        'shop_longitude',
+        'client_address',
+        'client_latitude',
+        'client_longitude',
+        'tariff',
+        'status',
+        'user_id',
+    ];
 
     const YANDEX_STATUS_ACCEPTED = 'accepted';
     const YANDEX_STATUS_CANCELLED = 'cancelled';
@@ -54,12 +97,19 @@ class OrderDeliveryInYandex extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     /**
+     * Статусы Яндекс заказов из документации https://yandex.ru/dev/logistics/api/about/claims-status.html
+     *
      * @return string[]
      */
     public static function getYandexStatuses(): array
@@ -96,6 +146,7 @@ class OrderDeliveryInYandex extends Model
 
     /**
      * статусы при которых можно отменить заказ
+     *
      * @return string[]
      */
     public static function getYandexStatusesThatCanBeCanceled(): array

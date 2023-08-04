@@ -33,7 +33,7 @@ class RussiaRemainsStrategy implements RemainsStrategyInterface
 
         foreach ($products as $key => $product) {
             // Отправляем GET-запрос
-            $response = $client->get('http://10.5.15.10:83/product/hs/remains/' . $product['product_sku'] . '/' . $shopMobileBackendId, $options);
+            $response = $client->get(env('RUSSIA_REMAINS_URL') . '/' . $product['product_sku'] . '/' . $shopMobileBackendId, $options);
 
             if ($response->getStatusCode() === ResponseAlias::HTTP_OK) {
                 $body = $response->getBody()->getContents();

@@ -15,38 +15,32 @@ class CountrySeeder extends Seeder
     {
         $countries = [
             [
-                'id' => 1,
+                'id' => Country::KYRGYZSTAN_COUNTRY_ID,
                 'name' => 'Кыргызстан',
                 'currency_name' => 'сом',
                 'currency_iso' => 'KGS',
                 'organization_name' => 'Кондитерский Дом Куликовский',
                 'contact_phone' => '+996312545555',
-                'latitude' => '54.9832693',
-                'longitude' => '82.8963831',
                 'status' => CountryStatus::Inactive
             ],
             [
-                'id' => 2,
+                'id' => Country::KAZAKHSTAN_COUNTRY_ID,
                 'name' => 'Казахстан',
                 'currency_name' => 'тенге',
                 'currency_iso' => 'KZT',
                 'organization_name' => 'Куликовский Казахстан',
                 'contact_phone' => '+77273647777',
-                'latitude' => '43.2220146',
-                'longitude' => '76.8512485',
-                'yandex_tariffs' => json_decode('["courier","express"]', true),
+                'yandex_tariffs' => '["courier","express"]',
                 'status' => CountryStatus::Active
             ],
             [
-                'id' => 3,
+                'id' => Country::RUSSIA_COUNTRY_ID,
                 'name' => 'Россия',
                 'currency_name' => 'руб.',
                 'currency_iso' => 'RUB',
                 'organization_name' => 'Куликовский Новосибирск',
                 'contact_phone' => '+73832021029',
-                'latitude' => '42.8746212',
-                'longitude' => '74.5697617',
-                'yandex_tariffs' => json_decode('["express"]', true),
+                'yandex_tariffs' => '["express"]',
                 'status' => CountryStatus::Active
             ]
         ];

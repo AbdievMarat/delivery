@@ -16,9 +16,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
 {
@@ -29,12 +27,13 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
-    public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $users = User::with('roles')
-            ->filter()
+            ->filter($request->all())
             ->paginate(10)
             ->withQueryString();
 
@@ -42,15 +41,11 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
     public function create(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        if (Auth::user()->hasRole('admin')) {
-            $roles = Role::query()->pluck('description', 'id')->all();
-        } else {
-            $roles = Role::query()->where('name', '!=', 'admin')->pluck('description', 'id')->all();
-        }
+        $roles = Role::getAvailableRoles();
         $countries = Country::query()->where('status', '=', CountryStatus::Active)->pluck('name', 'id')->all();
         $shops = Shop::query()->where('status', '=', ShopStatus::Active)->pluck('name', 'id')->all();
 
@@ -58,7 +53,8 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreUserRequest $request
+     * @return RedirectResponse
      */
     public function store(StoreUserRequest $request): RedirectResponse
     {
@@ -68,13 +64,10 @@ class UserController extends Controller
         $user = new User($data);
         $user->save();
 
-        if ($request->has('role_id')) {
-            $user->roles()->sync($request->get('role_id'));
-        }
+        $user->roles()->sync($request->get('role_id'));
 
-        if ($request->get('api_token') == 'on') {
-            $name = 'api-token';
-            $accessToken = $user->createToken($name)->plainTextToken;
+        if ($request->get('api_token') === 'on') {
+            $accessToken = $user->createToken('api-token')->plainTextToken;
 
             $user->access_token = $accessToken;
             $user->save();
@@ -84,7 +77,8 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @param User $user
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
     public function show(User $user): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
@@ -97,11 +91,7 @@ class UserController extends Controller
      */
     public function edit(User $user): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        if (Auth::user()->hasRole('admin')) {
-            $roles = Role::query()->pluck('description', 'id')->all();
-        } else {
-            $roles = Role::query()->where('name', '!=', 'admin')->pluck('description', 'id')->all();
-        }
+        $roles = Role::getAvailableRoles();
         $countries = Country::query()->where('status', '=', CountryStatus::Active)->pluck('name', 'id')->all();
         $shops = Shop::query()->where('status', '=', ShopStatus::Active)->pluck('name', 'id')->all();
 
@@ -116,19 +106,14 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $data = $request->validated();
+        $data['attached_shops'] = $request->get('attached_shops') ?? [];
         if ($request->has('password')) {
             $data['password'] = Hash::make($request->get('password'));
         }
-        if (!$request->has('attached_shops')) {
-            $data['attached_shops'] = [];
-        }
+
         $user->update($data);
 
-        if ($request->has('role_id')) {
-            $user->roles()->sync($request->get('role_id'));
-        } else {
-            $user->roles()->detach();
-        }
+        $user->roles()->sync($request->get('role_id'));
 
         return redirect()->route('admin.users.index')->with('success', ['text' => 'Успешно обновлено!']);
     }
@@ -142,14 +127,5 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->back()->with('success', ['text' => 'Успешно удалено!']);
-    }
-
-    public function createToken()
-    {
-        $user = User::query()->find(10);
-        $name = 'mobile app token';
-        $token = $user->createToken($name)->plainTextToken;
-
-        return response()->json(['token' => $token]);
     }
 }

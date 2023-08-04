@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -46,6 +47,6 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request): array
     {
-        return $request->only($this->username(), 'password') + ['active' => 1];
+        return $request->only($this->username(), 'password') + ['active' => User::ACTIVE_USER];
     }
 }

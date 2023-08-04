@@ -14,6 +14,6 @@ class CountryPolicy
      */
     public function delete(User $user, Country $country): bool
     {
-        return $user->id === 1;
+        return $user->id === User::ADMIN_USER_ID;
     }
 }

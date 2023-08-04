@@ -67,24 +67,40 @@
                                     </tr>
                                 </table>
 
-                                @if($order->delivery_mode === App\Enums\DeliveryMode::OnSpecifiedDate->value)
-                                    <div class="row mb-2">
-                                        <div class="col-md-8">
-                                            <x-forms.input type="date" name="delivery_date" id="delivery_date"
-                                                           label="Дата доставки"
-                                                           placeholder="Заполните дату доставки"
-                                                           value="{{ old('delivery_date') ?? date('Y-m-d', strtotime($order->delivery_date)) }}">
-                                            </x-forms.input>
-                                        </div>
-                                        <div class="col-4">
-                                            <x-forms.input type="time" name="delivery_time" id="delivery_time"
-                                                           label="Время доставки"
-                                                           placeholder="Заполните время доставки"
-                                                           value="{{ old('delivery_time') ?? date('H:i', strtotime($order->delivery_date)) }}">
-                                            </x-forms.input>
-                                        </div>
+                                <div class="row mb-2">
+                                    <label for="delivery_mode" class="col-sm-4 col-form-label">Режим доставки</label>
+                                    <div class="col-md-8">
+                                        <select name="delivery_mode" class="form-select @error('delivery_mode') is-invalid @enderror"
+                                                id="delivery_mode">
+                                            @foreach($deliveryModes as $id => $deliveryMode)
+                                                <option
+                                                        value="{{ $id }}" @selected($id == (old('delivery_mode') ?? $order->delivery_mode ))>{{ $deliveryMode }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('delivery_mode')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
-                                @endif
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-md-8">
+                                        <x-forms.input type="date" name="delivery_date" id="delivery_date"
+                                                       label="Дата доставки"
+                                                       placeholder="Заполните дату доставки"
+                                                       value="{{ $order->delivery_date ? date('Y-m-d', strtotime($order->delivery_date)) : date('Y-m-d') }}">
+                                        </x-forms.input>
+                                    </div>
+                                    <div class="col-4">
+                                        <x-forms.input type="time" name="delivery_time" id="delivery_time"
+                                                       label="Время доставки"
+                                                       placeholder="Заполните время доставки"
+                                                       value="{{ old('delivery_time') ?? date('H:i', strtotime($order->delivery_date)) }}">
+                                        </x-forms.input>
+                                    </div>
+                                </div>
 
                                 <div class="row">
                                     <label for="status" class="col-sm-4 col-form-label">Статус</label>
@@ -144,8 +160,14 @@
                             <div class="col-md-6">
                                 <div class="row py-2">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" value="{{ $order->client_phone }}"
-                                               disabled="disabled">
+                                        <input type="text" name="client_phone"
+                                               class="form-control @error('client_phone') is-invalid @enderror" id="client_phone"
+                                               value="{{ old('client_phone') ?? $order->client_phone }}">
+                                        @error('client_phone')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" value="{{ $order->client_name }}"

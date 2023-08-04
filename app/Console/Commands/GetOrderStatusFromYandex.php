@@ -9,6 +9,7 @@ use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderDeliveryInYandex;
 use App\Models\OrderLog;
+use App\Models\User;
 use App\Services\DeliveryYandex;
 use App\Services\MobileApplicationBackend;
 use GuzzleHttp\Exception\GuzzleException;
@@ -108,12 +109,11 @@ class GetOrderStatusFromYandex extends Command
                     $message = 'Не удалось завершить оплаченный заказ в МП.';
                 }
 
-                $orderLog = new OrderLog();
-                $orderLog->order_id = $order->id;
-                $orderLog->message = $message;
-                $orderLog->user_name = 'Сервер мобильного приложения';
-                $orderLog->user_id = 3;
-                $orderLog->save();
+                $order->logs()->create([
+                    'message' => $message,
+                    'user_name' => 'Сервер мобильного приложения',
+                    'user_id' => User::MOBILE_APPLICATION_USER_ID,
+                ]);
             }
         }
 

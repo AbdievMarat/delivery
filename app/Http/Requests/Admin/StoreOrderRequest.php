@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\DeliveryMode;
 use App\Enums\OrderSource;
+use App\Models\Country;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -33,11 +34,11 @@ class StoreOrderRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $countryId = $this->input('country_id');
 
-                    if ($countryId == 1 && !preg_match('/^996\d{9}$/', $value)) {
+                    if ($countryId == Country::KYRGYZSTAN_COUNTRY_ID && !preg_match('/^996\d{9}$/', $value)) {
                         $fail('Телефон клиента должен быть в формате 996555123456.');
-                    } elseif ($countryId == 2 && !preg_match('/^77\d{9}$/', $value)) {
+                    } elseif ($countryId == Country::KAZAKHSTAN_COUNTRY_ID && !preg_match('/^77\d{9}$/', $value)) {
                         $fail('Телефон клиента должен быть в формате 77123456789.');
-                    } elseif ($countryId == 3 && !preg_match('/^79\d{9}$/', $value)) {
+                    } elseif ($countryId == Country::RUSSIA_COUNTRY_ID && !preg_match('/^79\d{9}$/', $value)) {
                         $fail('Телефон клиента должен быть в формате 79123456789.');
                     }
                 },

@@ -24,7 +24,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->id === 1;
+        return $user->id === User::ADMIN_USER_ID;
     }
 
     /**

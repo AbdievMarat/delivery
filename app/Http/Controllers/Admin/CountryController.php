@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\CountryStatus;
+use App\Enums\ShopStatus;
 use App\Enums\YandexTariff;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCountryRequest;
@@ -11,6 +12,7 @@ use App\Models\Country;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 class CountryController extends Controller
@@ -21,16 +23,17 @@ class CountryController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
     public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $countries = Country::all();
+
         return view('admin.countries.index', compact('countries'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
     public function create(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
@@ -41,7 +44,8 @@ class CountryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreCountryRequest $request
+     * @return RedirectResponse
      */
     public function store(StoreCountryRequest $request): RedirectResponse
     {
@@ -52,7 +56,6 @@ class CountryController extends Controller
     }
 
     /**
-     * Display the specified resource.
      * @param Country $country
      * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
@@ -62,7 +65,6 @@ class CountryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
      * @param Country $country
      * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
      */
@@ -75,26 +77,43 @@ class CountryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateCountryRequest $request
+     * @param Country $country
+     * @return RedirectResponse
      */
     public function update(UpdateCountryRequest $request, Country $country): RedirectResponse
     {
         $data = $request->validated();
-        if (!$request->has('yandex_tariffs')) {
-            $data['yandex_tariffs'] = [];
-        }
+        $data['yandex_tariffs'] = $request->get('yandex_tariffs') ?? [];
+
         $country->update($data);
 
         return redirect()->route('admin.countries.index')->with('success', ['text' => 'Успешно обновлено!']);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param Country $country
+     * @return RedirectResponse
      */
     public function destroy(Country $country): RedirectResponse
     {
         $country->delete();
 
         return redirect()->back()->with('success', ['text' => 'Успешно удалено!']);
+    }
+
+    /**
+     * @param Country $country
+     * @return JsonResponse
+     */
+    public function getShopsOfCountry(Country $country): JsonResponse
+    {
+        $shops = $country
+            ->shops()
+            ->where('status', '=', ShopStatus::Active)
+            ->get()
+            ->toArray();
+
+        return response()->json(['shops' => $shops]);
     }
 }
